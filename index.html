@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO -->
+  <title>NeuropsyOL — Mobile Neuroscience Apps for Android</title>
+  <meta name="description" content="RECORDA, SENDA, and VIEWA: a free, open-source Android toolkit for mobile EEG, biosignal recording, and neuroscience research using the Lab Streaming Layer (LSL) and XDF format." />
+  <meta name="keywords" content="Android EEG recorder, Lab Streaming Layer Android, LSL recorder Android, LabRecorder mobile, XDF recorder Android, mobile EEG, mobile biosignal recording, mobile neuroscience, RECORDA, SENDA, VIEWA, NeuropsyOL, University of Oldenburg, liblsl Android, XDF file Android, biosignal streaming" />
+  <meta name="author" content="Neuropsychology Lab, University of Oldenburg" />
+  <link rel="canonical" href="https://neuropsyol.github.io/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="NeuropsyOL — Mobile Neuroscience Apps for Android" />
+  <meta property="og:description" content="RECORDA, SENDA, and VIEWA: open-source Android apps for mobile EEG and biosignal research with LSL and XDF." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://neuropsyol.github.io/" />
+
+  <!-- Schema.org -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": "NeuropsyOL Mobile Neuroscience Toolkit",
+    "description": "Open-source Android apps for mobile EEG, biosignal recording, and neuroscience research: RECORDA (LSL-to-XDF recorder), SENDA (sensor streamer), VIEWA (event marker).",
+    "url": "https://neuropsyol.github.io/",
+    "codeRepository": "https://github.com/NeuropsyOL",
+    "programmingLanguage": "Kotlin",
+    "operatingSystem": "Android",
+    "license": "https://www.gnu.org/licenses/gpl-3.0.html",
+    "author": {
+      "@type": "Organization",
+      "name": "Neuropsychology Lab, University of Oldenburg",
+      "url": "https://uol.de/neuropsychologie"
+    }
+  }
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #ffffff;
+      --bg-alt:    #f5f7fa;
+      --header-bg: #1a1f2e;
+      --accent:    #4f8ef7;
+      --accent2:   #36c9a0;
+      --text:      #1e2333;
+      --muted:     #6b7280;
+      --border:    #e2e8f0;
+      --recorda:   #4f8ef7;
+      --senda:     #36c9a0;
+      --viewa:     #f76f4f;
+      --radius:    12px;
+      --shadow:    0 4px 24px rgba(0,0,0,0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--text); background: var(--bg); line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Nav ── */
+    nav { background: var(--header-bg); position: sticky; top: 0; z-index: 100; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    nav ul { max-width: 1000px; margin: 0 auto; display: flex; flex-wrap: wrap; list-style: none; padding: 0 1.5rem; }
+    nav ul li a { display: block; padding: 0.85rem 1rem; color: #a0aec0; font-size: 0.88rem; font-weight: 500; text-decoration: none; transition: color 0.15s; }
+    nav ul li a:hover { color: #fff; text-decoration: none; }
+
+    /* ── Header ── */
+    header { background: var(--header-bg); color: #fff; padding: 3rem 1.5rem 3.5rem; text-align: center; }
+
+    /* Uni/dept logos */
+    .uni-logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+    /* UOL logo: white version via CSS invert */
+    .uni-logos .logo-uol {
+      height: 48px;
+      width: auto;
+      filter: brightness(0) invert(1);
+      opacity: 0.88;
+    }
+    /* Department logo — JPEG with white background, shown on a white pill */
+    .uni-logos .logo-dept {
+      height: 54px;
+      width: auto;
+      background: #ffffff;
+      padding: 5px 10px;
+      border-radius: 7px;
+    }
+    .uni-logos .logo-divider { width: 1px; height: 44px; background: rgba(255,255,255,0.2); }
+
+    .org-label { display: inline-block; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 1rem; }
+    header h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+    header h1 span { color: var(--accent); }
+    header p.subtitle { font-size: 1.1rem; color: #a0aec0; max-width: 620px; margin: 0 auto 2rem; }
+    .header-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; }
+    .header-badges a img { height: 22px; }
+
+    /* ── Sections ── */
+    section { padding: 4rem 1.5rem; }
+    .container { max-width: 1060px; margin: 0 auto; }
+    .section-title { text-align: center; font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .section-sub { text-align: center; color: var(--muted); margin-bottom: 2.5rem; font-size: 1rem; }
+
+    /* ── App cards ── */
+    #apps { background: var(--bg-alt); }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+    .card { background: var(--bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem; display: flex; flex-direction: column; border-top: 4px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+    .card.recorda { border-top-color: var(--recorda); }
+    .card.senda   { border-top-color: var(--senda); }
+    .card.viewa   { border-top-color: var(--viewa); }
+
+    .card-head { display: flex; align-items: center; gap: 0.85rem; margin-bottom: 0.6rem; }
+    .card-logo { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; flex-shrink: 0; }
+    .card-title-block h2 { font-size: 1.3rem; font-weight: 700; line-height: 1.2; }
+    .card-title-block h2 .badge { font-size: 0.63rem; font-weight: 600; vertical-align: middle; padding: 2px 7px; border-radius: 99px; margin-left: 6px; color: #fff; }
+    .recorda .badge { background: var(--recorda); }
+    .senda   .badge { background: var(--senda); }
+    .viewa   .badge { background: var(--viewa); }
+    .card .tagline { font-size: 0.85rem; color: var(--muted); margin-top: 0.1rem; }
+    .card > p { font-size: 0.95rem; margin-bottom: 1.2rem; margin-top: 0.75rem; }
+    .card ul { list-style: none; font-size: 0.9rem; color: var(--muted); margin-bottom: 1.2rem; }
+    .card ul li::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
+    .card ul li + li { margin-top: 0.3rem; }
+
+    /* Screenshot inside card */
+    .card-screenshot {
+      margin: 0.5rem auto 1.25rem;
+      display: block;
+      max-height: 260px;
+      width: auto;
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.13);
+      object-fit: contain;
+    }
+
+    .card-links { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: auto; }
+    .btn { display: inline-block; padding: 0.45rem 1rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; text-decoration: none; transition: opacity 0.15s; }
+    .btn:hover { opacity: 0.85; text-decoration: none; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-outline { border: 1.5px solid var(--border); color: var(--text); }
+    .card.senda .btn-primary { background: var(--senda); }
+    .card.viewa .btn-primary { background: var(--viewa); }
+
+    /* ── Pipeline ── */
+    #how { background: var(--bg); }
+
+    .pipeline-grid {
+      display: grid;
+      grid-template-columns: auto auto auto auto auto;
+      grid-template-rows: auto auto;
+      grid-template-areas:
+        "eeg     arrow1  recorda  arrow2  analysis"
+        "senda   .       viewa    .       .       ";
+      column-gap: 0.75rem;
+      row-gap: 0;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pg-eeg      { grid-area: eeg;      }
+    .pg-arrow1   { grid-area: arrow1;   align-self: center; }
+    .pg-recorda  { grid-area: recorda;  }
+    .pg-arrow2   { grid-area: arrow2;   align-self: center; }
+    .pg-analysis { grid-area: analysis; }
+    .pg-senda    { grid-area: senda;    display: flex; flex-direction: column; align-items: center; }
+    .pg-viewa    { grid-area: viewa;    display: flex; flex-direction: column; align-items: center; }
+
+    /* Dashed connector + label above optional boxes */
+    .opt-connector {
+      width: 2px;
+      height: 18px;
+      background: repeating-linear-gradient(to bottom, #cbd5e1 0px, #cbd5e1 4px, transparent 4px, transparent 8px);
+      margin-top: 0.4rem;
+    }
+    .opt-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      font-style: italic;
+      margin: 0.2rem 0 0.3rem;
+    }
+
+    /* Individual boxes */
+    .pipe-step { background: var(--bg-alt); border-radius: var(--radius); padding: 0.9rem 1.1rem; text-align: center; min-width: 130px; }
+    .pipe-step .pipe-logo { width: 36px; height: 36px; border-radius: 8px; object-fit: cover; margin: 0 auto 0.35rem; display: block; }
+    .pipe-step .pipe-icon { font-size: 1.6rem; margin-bottom: 0.35rem; display: block; }
+    .pipe-step strong { display: block; font-size: 0.9rem; }
+    .pipe-step span   { font-size: 0.75rem; color: var(--muted); display: block; }
+    .pipe-step.recorda-step { background: #eff6ff; border: 2px solid var(--recorda); }
+    .pipe-step.senda-step   { background: #f0fdf8; border: 2px solid var(--senda); }
+    .pipe-step.viewa-step   { background: #fff3f0; border: 2px solid var(--viewa); }
+
+    .pipe-arrow { font-size: 1.5rem; color: var(--muted); flex-shrink: 0; line-height: 1; }
+    .pipeline-note { text-align: center; margin-top: 2rem; color: var(--muted); font-size: 0.9rem; }
+
+    /* ── Getting started — 2-row auto layout ── */
+    #start { background: var(--bg-alt); }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .step { background: var(--bg); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
+    .step .num { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; background: var(--accent); color: #fff; border-radius: 50%; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .step p  { font-size: 0.9rem; color: var(--muted); }
+    .step a  { color: var(--accent); }
+
+    /* ── Publications ── */
+    #publications { background: var(--bg); }
+    .pub-list { list-style: none; display: flex; flex-direction: column; gap: 1.2rem; }
+    .pub-list li { border-left: 3px solid var(--accent); padding: 0.75rem 1rem; background: var(--bg-alt); border-radius: 0 var(--radius) var(--radius) 0; font-size: 0.93rem; }
+    .pub-list li a { color: var(--accent); font-weight: 600; }
+
+    /* ── Footer ── */
+    footer { background: var(--header-bg); color: #a0aec0; text-align: center; padding: 2.5rem 1.5rem; font-size: 0.88rem; }
+    footer a { color: var(--accent); }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.25rem; margin-bottom: 1rem; }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .pipeline-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+          "eeg"
+          "senda"
+          "arrow1"
+          "recorda"
+          "viewa"
+          "arrow2"
+          "analysis";
+      }
+      .pg-arrow1, .pg-arrow2 { justify-self: center; transform: rotate(90deg); }
+      .pg-eeg, .pg-recorda, .pg-analysis, .pg-senda, .pg-viewa { justify-self: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav aria-label="Page sections">
+  <ul>
+    <li><a href="#apps">Apps</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#start">Getting started</a></li>
+    <li><a href="#publications">Publications</a></li>
+    <li><a href="https://github.com/NeuropsyOL">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- HEADER -->
+<header>
+
+  <!-- University / department logos -->
+  <div class="uni-logos">
+    <a href="https://uol.de" title="University of Oldenburg">
+      <img class="logo-uol" src="images/uol_logo.png" alt="University of Oldenburg" />
+    </a>
+    <div class="logo-divider"></div>
+    <a href="https://uol.de/neuropsychologie" title="Neuropsychology Lab, University of Oldenburg">
+      <img class="logo-dept" src="images/department_logo.jpg" alt="Neuropsychology Lab, University of Oldenburg" />
+    </a>
+  </div>
+
+  <div class="org-label">Neuropsychology Lab · University of Oldenburg</div>
+  <h1>Mobile Neuroscience<br><span>on Android</span></h1>
+  <p class="subtitle">
+    Free, open-source Android apps for recording and streaming biosignals
+    with the <strong style="color:#fff">Lab Streaming Layer (LSL)</strong> —
+    no laptop required.
+  </p>
+  <div class="header-badges">
+    <a href="https://github.com/NeuropsyOL/RECORDA/releases/latest">
+      <img src="https://img.shields.io/github/v/release/NeuropsyOL/RECORDA?label=RECORDA&color=4f8ef7" alt="RECORDA latest release">
+    </a>
+    <a href="https://github.com/NeuropsyOL/SENDA/releases/latest">
+      <img src="https://img.shields.io/github/v/release/NeuropsyOL/SENDA?label=SENDA&color=36c9a0" alt="SENDA latest release">
+    </a>
+    <a href="https://github.com/NeuropsyOL/VIEWA/releases/latest">
+      <img src="https://img.shields.io/github/v/release/NeuropsyOL/VIEWA?label=VIEWA&color=f76f4f" alt="VIEWA latest release">
+    </a>
+    <a href="https://github.com/NeuropsyOL">
+      <img src="https://img.shields.io/badge/GitHub-NeuropsyOL-white?logo=github" alt="GitHub organisation">
+    </a>
+  </div>
+</header>
+
+<!-- APPS -->
+<section id="apps">
+  <div class="container">
+    <h2 class="section-title">The Apps</h2>
+    <p class="section-sub">Three companion apps — use them together or individually.</p>
+    <div class="cards">
+
+      <!-- RECORDA -->
+      <div class="card recorda">
+        <div class="card-head">
+          <img class="card-logo" src="images/recorda_logo.png" alt="RECORDA app icon" />
+          <div class="card-title-block">
+            <h2>RECORDA <span class="badge">Recorder</span></h2>
+            <p class="tagline">LabRecorder for Android</p>
+          </div>
+        </div>
+        <p>Discovers all LSL streams on the local Wi-Fi network and records them directly on your Android phone or tablet into the standard <strong>XDF</strong> file format — synchronized, timestamped, and ready for MATLAB, Python, or EEGLAB.</p>
+        <img class="card-screenshot" src="images/RECORDA.png" alt="RECORDA app screenshot" />
+        <ul>
+          <li>Auto-discovers all LSL streams</li>
+          <li>Records to XDF (multi-stream, time-synced)</li>
+          <li>Stream quality monitoring with notifications</li>
+          <li>liblsl compiled natively for Android (NDK)</li>
+          <li>Android 8.0+ (API 26–34)</li>
+        </ul>
+        <div class="card-links">
+          <a class="btn btn-primary" href="https://github.com/NeuropsyOL/RECORDA/releases/latest">⬇ Download APK</a>
+          <a class="btn btn-outline" href="https://github.com/NeuropsyOL/RECORDA">GitHub →</a>
+        </div>
+      </div>
+
+      <!-- SENDA -->
+      <div class="card senda">
+        <div class="card-head">
+          <img class="card-logo" src="images/senda_logo.png" alt="SENDA app icon" />
+          <div class="card-title-block">
+            <h2>SENDA <span class="badge">Streamer</span></h2>
+            <p class="tagline">Sensor Data streamer via LSL</p>
+          </div>
+        </div>
+        <p>Streams all built-in smartphone sensors — accelerometer, gyroscope, magnetometer, light, proximity, step counter, and more — as LSL streams on the local network, ready to be recorded by RECORDA.</p>
+        <img class="card-screenshot" src="images/SENDA.png" alt="SENDA app screenshot" />
+        <ul>
+          <li>Streams all built-in Android sensors as LSL</li>
+          <li>Configurable sampling rates per sensor</li>
+          <li>Works seamlessly with RECORDA</li>
+          <li>Android 8.0+</li>
+        </ul>
+        <div class="card-links">
+          <a class="btn btn-primary" href="https://github.com/NeuropsyOL/SENDA/releases/latest">⬇ Download APK</a>
+          <a class="btn btn-outline" href="https://github.com/NeuropsyOL/SENDA">GitHub →</a>
+        </div>
+      </div>
+
+      <!-- VIEWA -->
+      <div class="card viewa">
+        <div class="card-head">
+          <img class="card-logo" src="images/viewa_logo.webp" alt="VIEWA app icon" />
+          <div class="card-title-block">
+            <h2>VIEWA <span class="badge">Marker</span></h2>
+            <p class="tagline">Visual Event Marker &amp; Stimulus App</p>
+          </div>
+        </div>
+        <p>Presents visual stimuli and event markers during experiments and broadcasts them as LSL streams — so every stimulus is captured in your XDF recording with a precise timestamp.</p>
+        <img class="card-screenshot" src="images/VIEWA.png" alt="VIEWA app screenshot" />
+        <ul>
+          <li>Visual stimuli with LSL event output</li>
+          <li>Precise LSL timestamps for each event</li>
+          <li>Synchronises with RECORDA recordings</li>
+          <li>Android 8.0+</li>
+        </ul>
+        <div class="card-links">
+          <a class="btn btn-primary" href="https://github.com/NeuropsyOL/VIEWA/releases/latest">⬇ Download APK</a>
+          <a class="btn btn-outline" href="https://github.com/NeuropsyOL/VIEWA">GitHub →</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <h2 class="section-title">How it works</h2>
+    <p class="section-sub">A complete, self-contained data acquisition pipeline on a single phone,
+      or across multiple devices on the same Wi-Fi network.</p>
+
+    <div class="pipeline-grid">
+
+      <!-- Row 1, Col 1: EEG device -->
+      <div class="pg-eeg pipe-step">
+        <span class="pipe-icon">🧠</span>
+        <strong>EEG device</strong>
+        <span>Sends LSL stream</span>
+      </div>
+
+      <!-- Row 1, Col 2: arrow -->
+      <div class="pg-arrow1 pipe-arrow">→</div>
+
+      <!-- Row 1, Col 3: RECORDA -->
+      <div class="pg-recorda pipe-step recorda-step">
+        <img class="pipe-logo" src="images/recorda_logo.png" alt="RECORDA" />
+        <strong>RECORDA</strong>
+        <span>Records all streams → XDF</span>
+      </div>
+
+      <!-- Row 1, Col 4: arrow -->
+      <div class="pg-arrow2 pipe-arrow">→</div>
+
+      <!-- Row 1, Col 5: Analysis -->
+      <div class="pg-analysis pipe-step">
+        <span class="pipe-icon">🔬</span>
+        <strong>Analysis</strong>
+        <span>MATLAB · Python · MNE · EEGLAB</span>
+      </div>
+
+      <!-- Row 2, Col 1: SENDA (optional, below EEG device) -->
+      <div class="pg-senda">
+        <div class="opt-connector"></div>
+        <span class="opt-label">or also</span>
+        <div class="pipe-step senda-step">
+          <img class="pipe-logo" src="images/senda_logo.png" alt="SENDA" />
+          <strong>SENDA</strong>
+          <span>Phone sensors as LSL</span>
+        </div>
+      </div>
+
+      <!-- Row 2, Col 3: VIEWA (optional, below RECORDA) -->
+      <div class="pg-viewa">
+        <div class="opt-connector"></div>
+        <span class="opt-label">optional</span>
+        <div class="pipe-step viewa-step">
+          <img class="pipe-logo" src="images/viewa_logo.webp" alt="VIEWA" />
+          <strong>VIEWA</strong>
+          <span>Event markers as LSL</span>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="pipeline-note">
+      All streams share a common LSL clock — synchronized timestamps, no post-hoc alignment needed.<br>
+      XDF files can be opened with
+      <a href="https://github.com/xdf-modules/pyxdf">pyxdf</a>,
+      <a href="https://mne.tools/">MNE-Python</a>,
+      <a href="https://sccn.ucsd.edu/eeglab/">EEGLAB</a>, or
+      <a href="https://www.fieldtriptoolbox.org/">Fieldtrip</a>.
+    </p>
+  </div>
+</section>
+
+<!-- GETTING STARTED -->
+<section id="start">
+  <div class="container">
+    <h2 class="section-title">Getting Started</h2>
+    <p class="section-sub">Up and running in minutes — no compilation required.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="num">1</div>
+        <h3>Download the APKs</h3>
+        <p>Grab the latest APKs for
+          <a href="https://github.com/NeuropsyOL/RECORDA/releases/latest">RECORDA</a>,
+          <a href="https://github.com/NeuropsyOL/SENDA/releases/latest">SENDA</a>, and
+          <a href="https://github.com/NeuropsyOL/VIEWA/releases/latest">VIEWA</a>
+          from GitHub Releases.</p>
+      </div>
+      <div class="step">
+        <div class="num">2</div>
+        <h3>Sideload onto Android</h3>
+        <p>Enable <em>Install from unknown sources</em> in Android settings, then open the APK files.
+          Android 8.0 (API 26) or higher required.</p>
+      </div>
+      <div class="step">
+        <div class="num">3</div>
+        <h3>Join the same Wi-Fi</h3>
+        <p>Put all devices on the same local Wi-Fi network.
+          LSL uses multicast — it does not work across separate network segments.</p>
+      </div>
+      <div class="step">
+        <div class="num">4</div>
+        <h3>Start streaming</h3>
+        <p>Launch SENDA and/or your EEG device. Open RECORDA, tap <strong>Refresh</strong>,
+          select your streams, and tap <strong>Start</strong>.</p>
+      </div>
+      <div class="step">
+        <div class="num">5</div>
+        <h3>Analyse your data</h3>
+        <p>Transfer the <code>.xdf</code> file and open it with
+          <a href="https://github.com/xdf-modules/pyxdf">pyxdf</a>,
+          <a href="https://mne.tools/">MNE-Python</a>, or
+          <a href="https://sccn.ucsd.edu/eeglab/">EEGLAB</a>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PUBLICATIONS -->
+<section id="publications">
+  <div class="container">
+    <h2 class="section-title">Publications</h2>
+    <p class="section-sub">
+      Please cite the relevant paper if you use these apps in your research.<br>
+      <em>Published with RECORDA, SENDA, or VIEWA?
+      <a href="https://github.com/NeuropsyOL/RECORDA/issues">Let us know</a> — we'll add it here.</em>
+    </p>
+    <ul class="pub-list">
+      <li>
+        <strong>Haupt et al.</strong> — <em>Title pending publication</em> — accepted 2026.
+        Citation will be updated once a DOI is available. Check the
+        <a href="https://github.com/NeuropsyOL/RECORDA#citation">RECORDA README</a> for the latest.
+      </li>
+      <li>
+        <strong>Blum S, Hölle D, Bleichner MG, Debener S.</strong>
+        Pocketable Labs for Everyone: Synchronized Multi-Sensor Data Streaming and Recording on Smartphones with the Lab Streaming Layer.
+        <em>Sensors</em>, 2021; 21(23):8135.
+        <a href="https://doi.org/10.3390/s21238135">doi:10.3390/s21238135</a>
+      </li>
+      <li>
+        <strong>Debener S, Minow F, Emkes R, Gandras K, de Vos M.</strong>
+        How about taking a low-cost, small, and wireless EEG for a walk?
+        <em>Psychophysiology</em>, 2012; 49(11):1449–1453.
+        <a href="https://doi.org/10.1111/j.1469-8986.2012.01471.x">doi:10.1111/j.1469-8986.2012.01471.x</a>
+      </li>
+      <li>
+        <strong>Kothe C et al.</strong>
+        The Lab Streaming Layer for Synchronized Multimodal Recording.
+        <em>Imaging Neurosci (Camb).</em> 2025;3:IMAG.a.136.
+        <a href="https://doi.org/10.1162/IMAG.a.136">doi:10.1162/IMAG.a.136</a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="https://github.com/NeuropsyOL/RECORDA">RECORDA on GitHub</a>
+    <a href="https://github.com/NeuropsyOL/SENDA">SENDA on GitHub</a>
+    <a href="https://github.com/NeuropsyOL/VIEWA">VIEWA on GitHub</a>
+    <a href="https://uol.de/neuropsychologie">Neuropsychology Lab, Uni Oldenburg</a>
+    <a href="https://labstreaminglayer.readthedocs.io/">Lab Streaming Layer</a>
+  </div>
+  <p>
+    Developed by the <a href="https://uol.de/neuropsychologie">Neuropsychology Lab of Stefan Debener</a>,
+    University of Oldenburg, Germany.
+    Released under the <a href="https://www.gnu.org/licenses/gpl-3.0.html">GNU GPL v3</a>.
+  </p>
+</footer>
+
+</body>
+</html>

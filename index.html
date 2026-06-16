@@ -126,16 +126,16 @@
     .senda   .badge { background: var(--senda); }
     .viewa   .badge { background: var(--viewa); }
     .card .tagline { font-size: 0.85rem; color: var(--muted); margin-top: 0.1rem; }
-    .card > p { font-size: 0.95rem; margin-bottom: 1.2rem; margin-top: 0.75rem; }
-    .card ul { list-style: none; font-size: 0.9rem; color: var(--muted); margin-bottom: 1.2rem; }
+    .card > p { font-size: 0.95rem; margin-bottom: 1.2rem; margin-top: 0.75rem; height: 9em; }
+    .card ul { list-style: none; font-size: 0.9rem; color: var(--muted); margin-bottom: 1.2rem; height: 11em; }
     .card ul li::before { content: "✓ "; color: var(--accent2); font-weight: 700; }
     .card ul li + li { margin-top: 0.3rem; }
 
     /* Screenshot inside card */
     .card-screenshot {
-      margin: 0.5rem auto 1.25rem;
+      margin: 1.5rem auto 1.5rem;
       display: block;
-      max-height: 260px;
+      height: 260px;
       width: auto;
       max-width: 100%;
       border-radius: 10px;
@@ -287,10 +287,13 @@
       <img src="https://img.shields.io/github/v/release/NeuropsyOL/SENDA?label=SENDA&color=36c9a0" alt="SENDA latest release">
     </a>
     <a href="https://github.com/NeuropsyOL/VIEWA/releases/latest">
-      <img src="https://img.shields.io/github/v/release/NeuropsyOL/VIEWA?label=VIEWA&color=f76f4f" alt="VIEWA latest release">
+      <img src="https://img.shields.io/badge/VIEWA-v1.0.0-f76f4f" alt="VIEWA latest release">
     </a>
     <a href="https://github.com/NeuropsyOL">
       <img src="https://img.shields.io/badge/GitHub-NeuropsyOL-white?logo=github" alt="GitHub organisation">
+    </a>
+    <a href="https://doi.org/10.5281/zenodo.20589828">
+      <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.20589828.svg" alt="DOI">
     </a>
   </div>
 </header>
@@ -314,10 +317,8 @@
         <p>Discovers all LSL streams on the local Wi-Fi network and records them directly on your Android phone or tablet into the standard <strong>XDF</strong> file format — synchronized, timestamped, and ready for MATLAB, Python, or EEGLAB.</p>
         <img class="card-screenshot" src="images/RECORDA.png" alt="RECORDA app screenshot" />
         <ul>
-          <li>Auto-discovers all LSL streams</li>
           <li>Records to XDF (multi-stream, time-synced)</li>
           <li>Stream quality monitoring with notifications</li>
-          <li>liblsl compiled natively for Android (NDK)</li>
           <li>Android 8.0+ (API 26–34)</li>
         </ul>
         <div class="card-links">
@@ -338,8 +339,7 @@
         <p>Streams all built-in smartphone sensors — accelerometer, gyroscope, magnetometer, light, proximity, step counter, and more — as LSL streams on the local network, ready to be recorded.</p>
         <img class="card-screenshot" src="images/SENDA.png" alt="SENDA app screenshot" />
         <ul>
-          <li>Streams all built-in Android sensors as LSL</li>
-          <li>Configurable sampling rates per sensor</li>
+          <li>Streams all built-in sensors as LSL</li>
           <li>Works seamlessly with RECORDA</li>
           <li>Google Media Pipe integration for audio classification</li>
           <li>Android 8.0+</li>
@@ -420,7 +420,7 @@
         <div class="pipe-step senda-step">
           <img class="pipe-logo" src="images/senda_logo.png" alt="SENDA" />
           <strong>SENDA</strong>
-          <span>Phone sensors as LSL</span>
+          <span>Phone sensors as LSL streams</span>
         </div>
       </div>
 
@@ -431,7 +431,7 @@
         <div class="pipe-step viewa-step">
           <img class="pipe-logo" src="images/viewa_logo.webp" alt="VIEWA" />
           <strong>VIEWA</strong>
-          <span>Event markers as LSL</span>
+          <span>Live view of LSL streams</span>
         </div>
       </div>
 

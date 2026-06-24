@@ -6,8 +6,8 @@
 
   <!-- SEO -->
   <title>NeuropsyOL — Mobile Neuroscience Apps for Android</title>
-  <meta name="description" content="RECORDA, SENDA, and VIEWA: a free, open-source Android toolkit for mobile EEG, biosignal recording, and neuroscience research using the Lab Streaming Layer (LSL) and XDF format." />
-  <meta name="keywords" content="Android EEG recorder, Lab Streaming Layer Android, LSL recorder Android, LabRecorder mobile, XDF recorder Android, mobile EEG, mobile biosignal recording, mobile neuroscience, RECORDA, SENDA, VIEWA, NeuropsyOL, University of Oldenburg, liblsl Android, XDF file Android, biosignal streaming" />
+  <meta name="description" content="RECORDA, SENDA, and VIEWA: a free, open-source Android toolkit for mobile EEG, biosignal recording, and neuroscience research using the Lab Streaming Layer (LSL)[...]" />
+  <meta name="keywords" content="Android EEG recorder, Lab Streaming Layer Android, LSL recorder Android, LabRecorder mobile, XDF recorder Android, mobile EEG, mobile biosignal recording, mobile n[...]" />
   <meta name="author" content="Neuropsychology Lab, University of Oldenburg" />
   <link rel="canonical" href="https://neuropsyol.github.io/" />
 
@@ -112,7 +112,7 @@
     /* ── App cards ── */
     #apps { background: var(--bg-alt); }
     .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
-    .card { background: var(--bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem; display: flex; flex-direction: column; border-top: 4px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; }
+    .card { background: var(--bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 2rem; display: flex; flex-direction: column; border-top: 4px solid var(--border); transition: transform 0.15s, box-shadow 0.15s; }
     .card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
     .card.recorda { border-top-color: var(--recorda); }
     .card.senda   { border-top-color: var(--senda); }
@@ -210,7 +210,7 @@
       gap: 1.25rem;
     }
     .step { background: var(--bg); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
-    .step .num { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; background: var(--accent); color: #fff; border-radius: 50%; font-weight: 700; font-size: 0.9rem; margin-bottom: 0.75rem; }
+    .step .num { display: inline-flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; background: var(--accent); color: #fff; border-radius: 50%; font-weight: 700; font-size: 0.85rem; margin-bottom: 0.65rem; }
     .step h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
     .step p  { font-size: 0.9rem; color: var(--muted); }
     .step a  { color: var(--accent); }
@@ -314,7 +314,7 @@
             <p class="tagline">LabRecorder for Android</p>
           </div>
         </div>
-        <p>Discovers all LSL streams on the local Wi-Fi network and records them directly on your Android phone or tablet into the standard <strong>XDF</strong> file format — synchronized, timestamped, and ready for MATLAB, Python, or EEGLAB.</p>
+        <p>Discovers all LSL streams on the local Wi-Fi network and records them directly on your Android phone or tablet into the standard <strong>XDF</strong> file format — synchronized, time-aligned, and ready for analysis.</p>
         <img class="card-screenshot" src="images/RECORDA.png" alt="RECORDA app screenshot" />
         <ul>
           <li>Records to XDF (multi-stream, time-synced)</li>
@@ -322,7 +322,7 @@
           <li>Android 8.0+ (API 26–34)</li>
         </ul>
         <div class="card-links">
-          <a class="btn btn-primary" href="https://github.com/NeuropsyOL/RECORDA/releases/latest">⬇ Download APK</a>
+          <a class="btn btn-primary" href="https://github.com/NeuropsyOL/RECORDA/releases/download/v1.4/RECORDA-1.4.apk">⬇ Download APK</a>
           <a class="btn btn-outline" href="https://github.com/NeuropsyOL/RECORDA">GitHub →</a>
         </div>
       </div>
@@ -336,7 +336,7 @@
             <p class="tagline">Sensor Data streamer via LSL</p>
           </div>
         </div>
-        <p>Streams all built-in smartphone sensors — accelerometer, gyroscope, magnetometer, light, proximity, step counter, and more — as LSL streams on the local network, ready to be recorded.</p>
+        <p>Streams all built-in smartphone sensors — accelerometer, gyroscope, magnetometer, light, proximity, step counter, and more — as LSL streams on the local network, ready to be recorded by RECORDA.</p>
         <img class="card-screenshot" src="images/SENDA.png" alt="SENDA app screenshot" />
         <ul>
           <li>Streams all built-in sensors as LSL</li>
@@ -345,7 +345,7 @@
           <li>Android 8.0+</li>
         </ul>
         <div class="card-links">
-          <a class="btn btn-primary" href="https://github.com/NeuropsyOL/SENDA/releases/latest">⬇ Download APK</a>
+          <a class="btn btn-primary" href="https://github.com/NeuropsyOL/SENDA/releases/download/v2.0.0/SENDA-2.0.49.apk">⬇ Download APK</a>
           <a class="btn btn-outline" href="https://github.com/NeuropsyOL/SENDA">GitHub →</a>
         </div>
       </div>
@@ -368,7 +368,7 @@
           <li>Android 8.0+</li>
         </ul>
         <div class="card-links">
-          <a class="btn btn-primary" href="https://github.com/NeuropsyOL/VIEWA/releases/latest">⬇ Download APK</a>
+          <a class="btn btn-primary" href="https://github.com/NeuropsyOL/VIEWA/releases/download/v1.0.0/VIEWA-01-release.apk">⬇ Download APK</a>
           <a class="btn btn-outline" href="https://github.com/NeuropsyOL/VIEWA">GitHub →</a>
         </div>
       </div>
